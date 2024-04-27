@@ -1,0 +1,18 @@
+{
+  "name": "notes",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Plsr <christian@gigs.com>",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@types/node": "^20.12.7",
+    "micromark": "^4.0.0",
+    "node-html-parser": "^6.1.13",
+    "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "compile": "./node_modules/typescript/bin/tsc",
+    "dev": "yarn run compile && node lib/convert.js"
+  }
+}

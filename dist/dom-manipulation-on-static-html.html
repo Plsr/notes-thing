@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" >
+    <title>Document</title>
+  </head>
+  <body><h1>DOM Maniputlation on static HTML files</h1>
+<p>I have a static <code>example.html</code> file that has a basic <code>html</code> structure in it.<br>
+I want to parse it in <code>node.js</code> and manipulate the <code>DOM</code> elements in it.</p>
+<h2>Parse the HTML file</h2>
+<p>We're using <a href="https://www.npmjs.com/package/node-html-parser">node-html-parser</a> to parse the file</p>
+<pre><code class="language-js">const filePath = `path/to/file.html`;
+const baseHtml = readFileSync(filePath);
+const root = parse(baseHtml.toString());
+</code></pre>
+<h2>Manipulate the DOM</h2>
+<p>With the parsed HTML, we can now manipulate the DOM elements like in the browser</p>
+<pre><code class="language-js">const body = root.querySelector(&quot;body&quot;);
+body.appendChild(parse(htmlContents));
+
+writeFileSync(distFilePath, root.toString());
+</code></pre>
+<h2>Write the changed file</h2>
+<p>After we're done manipulating, we write the updated HTML back to the file</p>
+<pre><code class="language-js">writeFileSync(distFilePath, root.toString());
+</code></pre>
+<p>llllllllllllll</p>
+</body>
+</html>
