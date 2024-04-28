@@ -10,5 +10,7 @@ My working notes. They're rough by design.
 ## TODO
 
 - [ ] Add metadata
+- [ ] Tagging system
+- [ ] Folders
 - [x] Add a proper index.html that list all files as links
 - [x] Add github actions to publish this on Github Pages
