@@ -9,6 +9,6 @@ My working notes. They're rough by design.
 
 ## TODO
 
-- [ ] Add github actions to publish this on Github Pages
 - [ ] Add metadata
-- [ ] Add a proper index.html
+- [x] Add a proper index.html that list all files as links
+- [x] Add github actions to publish this on Github Pages

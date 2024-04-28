@@ -4,7 +4,11 @@
     <meta charset="UTF-8" >
     <title>Document</title>
   </head>
-  <body><h1>DOM Maniputlation on static HTML files</h1>
+  <body>
+    <nav>
+      <a href="./index.html">Back to index</a>
+    </nav>
+  <h1>DOM Maniputlation on static HTML files</h1>
 <p>I have a static <code>example.html</code> file that has a basic <code>html</code> structure in it.<br>
 I want to parse it in <code>node.js</code> and manipulate the <code>DOM</code> elements in it.</p>
 <h2>Parse the HTML file</h2>
@@ -24,6 +28,5 @@ writeFileSync(distFilePath, root.toString());
 <p>After we're done manipulating, we write the updated HTML back to the file</p>
 <pre><code class="language-js">writeFileSync(distFilePath, root.toString());
 </code></pre>
-<p>llllllllllllll</p>
 </body>
 </html>
