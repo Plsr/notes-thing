@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" >
+    <title>Document</title>
+  </head>
+  <body>
+    <nav>
+      <a href="./index.html">Back to index</a>
+    </nav>
+  <h1>A philosophy of Software Design - Chapter 7</h1>
+<p>Software systems are desinged in layers, where every layer provides a different abstraction compared to the layers above and below.<br>
+If a system contains adjacent layers with similar abstractions, this is a red flag.</p>
+<p>The chapter discusses situations where this happens, what problems arise from it and how to refactor code accordingly.</p>
+<h2>Pass-through methods</h2>
+<p>A pass-through method is a method that does little more than calling a similar method, often with the same signature:</p>
+<pre><code class="language-ts">function storeItem(item: string, key: string) {
+  window.localStorage.setItem(item, key)
+}
+</code></pre>
+<p>Pass-through methods make classes shallower: They increase the interfact of the class without increasing the functionality.</p>
+<p>They also create dependencies between classes: If <code>window.localStorage.setItem()</code> would change to accept an object now:</p>
+<pre><code class="language-ts">type Payload = {
+  value: string
+  key: string
+}
+
+// in window.localStorage
+function setItem(payload: Payload) {
+  //...
+}
+</code></pre>
+<p>the <code>storeItem</code> function would have to change as well (two changed needed compared to one).</p>
+<p>Pass-through methods indicate confusion over the responsibilities of classes.</p>
+<h2>When is interface duplication okay?</h2>
+<p>Interfact duplication is okay when the duplicate method acts as a <em>dispatcher</em>: A dispatcher uses it's arguments to select on of several other methods to invoke. They often have the same interface as the methods they're duplicating.</p>
+<pre><code class="language-ts">function storeItem(item: string, key: string) {
+  if (typeof item === 'string') {
+    window.localStorage.setItem(item, 'MY_APP_USER_EMAIL&quot;)
+    return
+  }
+
+  if (Array.isArray(item)) {
+    const serializedItem = JSON.stringify(item)
+    window.localStorage.setItem(serializedItem, 'MY_APP_CART_PRODUCTS&quot;)
+  }
+}
+</code></pre>
+<h2>Decorators</h2>
+<p>A <em>decorator</em> (or <em>wrapper</em>) takes an exising object and extends it's functionality, providing a smiliar or identical API to the underlying object</p>
+<pre><code class="language-ts">function storeItem(item: string, key: string) {
+  const prefixedKey = `MY_APP_${key}`
+  window.localStorage.setItem(item, prefixedKey)
+}
+</code></pre>
+<p>Sometimes they make sense to use, but usually there is a better solution:</p>
+<ul>
+<li>Can the functionality be added directly into the underlying class, if it is general purpose enough?</li>
+<li>Would it make sense to merge the functionality with the use case, instead of generating a new class?</li>
+<li>Can the new functionality be merged with an existing decorator?</li>
+<li>Can the functionality be wrapped in a stand-alone way?</li>
+</ul>
+<h2>Interface versus implementation</h2>
+<p>The interface of a class should normally be different from its implementation, meaning the representations internally should be different from the interface a class exposes.</p>
+<p>With this <code>cart</code> file</p>
+<pre><code class="language-ts">// cart.ts
+const CART_STORAGE KEY = &quot;MY_APP_CART&quot;
+
+export type CartItem {
+  id: string, 
+  name: string, 
+  qty: number 
+}
+
+export type Cart {
+  createdAt: string
+  items: CartItem[]
+}
+
+export function getCart(): string | null {
+  return window.localStorage.getItem(CART_STORAGE_KEY)
+}
+
+
+export function findItem(cart: Cart, productId: string): CartItem | undefined {
+  return cart.items.find((item) =&gt; item.id === productId)
+}
+</code></pre>
+<p>a caller would have to do the following to fetch a product from the cart:</p>
+<pre><code class="language-ts">// caller.ts
+import { getCart, findItem, Cart } from 'cart'
+
+const storedCart = getCart()
+
+if (!storedCart) {
+  return
+}
+
+const cart: Cart = JSON.parse(storedCart)
+
+const product = findItem(cart, &quot;1&quot;)
+</code></pre>
+<p>We could simplify the interface and make the <code>cart</code> class deeper:</p>
+<pre><code class="language-ts">// cart.ts
+const CART_STORAGE KEY = &quot;MY_APP_CART&quot;
+
+export type CartItem {
+  id: string, 
+  name: string, 
+  qty: number 
+}
+
+type Cart {
+  createdAt: string
+  items: CartItem[]
+}
+
+
+export function findItem(productId: string): CartItem | undefined {
+  const storedCart = window.localStorage.getItem(CART_STORAGE_KEY)
+
+  if (!storedCart) {
+    return undefined
+  }
+
+  const cart: Cart = JSON.parse(storedCart)
+
+  return cart.items.find((item) =&gt; item.id === productId)
+}
+</code></pre>
+<p>which would allow the caller to not need any knowledge of the <code>Cart</code> at all:</p>
+<pre><code class="language-ts">// caller.ts
+import { findItem } from 'cart'
+
+const product = findItem(&quot;1&quot;)
+</code></pre>
+<h2>Pass-through variables</h2>
+<p>Similar to pass-through methods, pass-through variables are passed through many different layers. They may be defined in the topmost layer but only be needed in the lowest layer. They add complexity because they force every intermediate function to be aware of their existence.</p>
+<p>There are multiple ways to work around this, none of them optimal:</p>
+<ul>
+<li>shared objects</li>
+<li>global variables</li>
+<li>context</li>
+</ul>
+<p>From the above, the context is the lest suboptimal solution. It requires dispcipline to make sure the context does not become a grab-bag of variables.</p>
+<h2>Conculsion</h2>
+<p>General rule: &quot;Different layer, different abstraction&quot;</p>
+</body>
+</html>

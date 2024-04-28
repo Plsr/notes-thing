@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" >
+    <title>Document</title>
+  </head>
+  <body>
+    <nav>
+      <a href="./index.html">Back to index</a>
+    </nav>
+  <h1>Next Parallel Routes</h1>
+<p>(WIP)</p>
+<p>Parallel routes can be used to render one or more pages within the same layout, either dynamically or in parallel. Useful for i.e. Dashboards.</p>
+<p>They are defined using slots with the <code>@folder</code> convention:</p>
+<pre><code>app
+|- @products
+   |- page.tsx
+|- @cart
+   |- page.tsx
+layout.tsx
+page.tsx
+</code></pre>
+<p>The root <code>layout.tsx</code> now accepts the <code>@products</code> and <code>@cart</code> slots automagically:</p>
+<pre><code class="language-tsx">export default function Layout({
+  children,
+  products,
+  cart,
+}: {
+  children: React.ReactNode;
+  products: React.ReactNode;
+  cart: React.ReactNode;
+}) {
+  return (
+    &lt;&gt;
+      {children}
+      {products}
+      {cart}
+    &lt;/&gt;
+  );
+}
+</code></pre>
+<p>Slots are not route segments and will not affect the URL structure.</p>
+<h2>Examples</h2>
+<h3>Conditional Routes</h3>
+<p>Given the structure</p>
+<pre><code>app
+|- @products
+   |- page.tsx
+|- @cart
+   |- page.tsx
+layout.tsx
+page.tsx
+</code></pre>
+<p>in the layout, we can render one of the two parallel routes conditionally:</p>
+<pre><code class="language-tsx">export default function Layout({
+  products,
+  cart,
+}: {
+  products: React.ReactNode;
+  cart: React.ReactNode;
+}) {
+  const condition = evaluateCondition();
+
+  return &lt;&gt;{condition ? cart : products}&lt;/&gt;;
+}
+</code></pre>
+</body>
+</html>
