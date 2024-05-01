@@ -12,5 +12,7 @@ My working notes. They're rough by design.
 - [ ] Add metadata
 - [ ] Tagging system
 - [ ] Folders
+- [ ] Shared styling between content and index page
+- [ ] Deleted files are not deleted from generated html
 - [x] Add a proper index.html that list all files as links
 - [x] Add github actions to publish this on Github Pages
